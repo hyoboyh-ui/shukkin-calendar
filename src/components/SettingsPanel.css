@@ -1,0 +1,68 @@
+.settings-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 10, 0, 0.45);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 60px 16px;
+  z-index: 50;
+}
+
+.settings-panel {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 18px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
+}
+
+.settings-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.settings-panel__header h2 {
+  font-size: 1rem;
+}
+
+.settings-panel__close {
+  border: none;
+  background: var(--surface-alt);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--text-muted);
+}
+
+.settings-panel__action {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}
+
+.settings-panel__action--outline {
+  background: transparent;
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+}
+
+.settings-panel__file-input {
+  display: none;
+}
+
+.settings-panel__message {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+}

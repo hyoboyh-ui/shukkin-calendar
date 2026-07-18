@@ -1,0 +1,36 @@
+.total-tab {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.total-tab__label {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.total-tab__amount {
+  font-size: 2.6rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.total-tab__tax {
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+}
+
+.total-tab__message {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface-alt);
+  border-radius: 12px;
+  padding: 10px 14px;
+  max-width: 280px;
+}
