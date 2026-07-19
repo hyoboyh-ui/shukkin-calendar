@@ -47,7 +47,7 @@
   height: 44px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 3px 10px rgba(255, 140, 0, 0.4);
+  box-shadow: 0 3px 10px rgba(138, 52, 68, 0.35);
   z-index: 0;
 }
 

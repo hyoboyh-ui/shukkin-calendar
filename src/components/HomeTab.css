@@ -22,8 +22,25 @@
   flex-shrink: 0;
 }
 
-.day-card__body {
+.day-card__viewport {
   flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.day-card__track {
+  display: flex;
+  transition: transform 260ms ease;
+}
+
+.day-card__slot {
+  flex: 1 0 0%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 0 2px;
+}
+
+.day-card__body {
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -15,7 +15,8 @@
 
 .month-grid__weekday {
   text-align: center;
-  font-size: 0.72rem;
+  font-size: 0.82rem;
+  font-weight: 600;
   color: var(--text-muted);
   padding-bottom: 2px;
 }
@@ -64,36 +65,36 @@
 }
 
 .cell__date {
-  font-size: 0.78rem;
-  font-weight: 600;
+  font-size: 0.94rem;
+  font-weight: 700;
   line-height: 1;
 }
 
 .cell__weekday {
-  font-size: 0.6rem;
-  font-weight: 400;
+  font-size: 0.7rem;
+  font-weight: 500;
   margin-left: 1px;
-  opacity: 0.75;
+  opacity: 0.8;
 }
 
 .cell__status {
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .row-bubble {
   grid-row: 1;
   align-self: end;
   justify-self: stretch;
-  height: 20px;
+  height: 22px;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--accent);
   color: #fff;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   font-weight: 800;
   border-radius: 999px;
   pointer-events: none;
