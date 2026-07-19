@@ -17,6 +17,13 @@
   padding: 6px;
   flex: 1;
   height: 44px;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.bottom-nav__btn:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
 }
 
 .bottom-nav__icon {
@@ -30,10 +37,12 @@
   -webkit-mask-repeat: no-repeat;
   mask-position: center;
   -webkit-mask-position: center;
+  transition: transform 150ms ease;
 }
 
 .bottom-nav__btn.is-active .bottom-nav__icon {
   background-color: var(--accent-text);
+  transform: scale(1.12);
 }
 
 .bottom-nav__btn--fab {
@@ -49,6 +58,11 @@
   background: var(--accent);
   box-shadow: 0 3px 10px rgba(251, 146, 91, 0.45);
   z-index: 0;
+  transition: transform 150ms ease;
+}
+
+.bottom-nav__btn--fab.is-active::before {
+  transform: scale(1.12);
 }
 
 .bottom-nav__btn--fab .bottom-nav__icon {
