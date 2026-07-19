@@ -55,5 +55,14 @@ export const listRecentPeriodKeys = (count: number, fromKey?: string): string[] 
   return keys;
 };
 
+export const listPeriodKeysAround = (before: number, after: number, fromKey?: string): string[] => {
+  const base = fromKey ?? periodKey(new Date());
+  const keys: string[] = [];
+  for (let i = -before; i <= after; i++) {
+    keys.push(shiftPeriodKey(base, i));
+  }
+  return keys;
+};
+
 const WEEKDAY_JA = ['日', '月', '火', '水', '木', '金', '土'];
 export const weekdayJa = (d: Date): string => WEEKDAY_JA[d.getDay()];
