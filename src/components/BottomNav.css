@@ -33,7 +33,7 @@
 }
 
 .bottom-nav__btn.is-active .bottom-nav__icon {
-  background-color: var(--accent);
+  background-color: var(--accent-text);
 }
 
 .bottom-nav__btn--fab {
@@ -47,7 +47,7 @@
   height: 44px;
   border-radius: 50%;
   background: var(--accent);
-  box-shadow: 0 3px 10px rgba(138, 52, 68, 0.35);
+  box-shadow: 0 3px 10px rgba(251, 146, 91, 0.45);
   z-index: 0;
 }
 
@@ -56,9 +56,9 @@
   z-index: 1;
   width: 30px;
   height: 30px;
-  background-color: #fff;
+  background-color: var(--on-warm);
 }
 
 .bottom-nav__btn--fab.is-active .bottom-nav__icon {
-  background-color: #fff;
+  background-color: var(--on-warm);
 }

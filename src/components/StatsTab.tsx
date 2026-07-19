@@ -39,7 +39,7 @@ const StatsTab = () => {
       {
         label: '運収',
         data: stats.map((s) => s.total),
-        backgroundColor: '#8A3444',
+        backgroundColor: '#FB925B',
         borderRadius: 6,
       },
     ],
@@ -48,9 +48,9 @@ const StatsTab = () => {
   const breakdownData = {
     labels,
     datasets: [
-      { label: '出勤', data: stats.map((s) => s.work), backgroundColor: '#C1AEBE', stack: 'a' },
-      { label: '休日', data: stats.map((s) => s.off), backgroundColor: '#5B2F47', stack: 'a' },
-      { label: '有給', data: stats.map((s) => s.paid), backgroundColor: '#A27DA5', stack: 'a' },
+      { label: '出勤', data: stats.map((s) => s.work), backgroundColor: '#FCC79E', stack: 'a' },
+      { label: '休日', data: stats.map((s) => s.off), backgroundColor: '#FB7B0C', stack: 'a' },
+      { label: '有給', data: stats.map((s) => s.paid), backgroundColor: '#FBA70E', stack: 'a' },
     ],
   };
 

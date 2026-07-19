@@ -93,7 +93,7 @@
   align-items: center;
   justify-content: center;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-warm);
   font-size: 0.72rem;
   font-weight: 800;
   border-radius: 999px;
@@ -105,7 +105,7 @@
 
 .row-bubble--edge {
   background: var(--bubble-bg);
-  color: var(--accent);
+  color: var(--accent-text);
   border: 2px dashed var(--accent-soft);
   box-shadow: none;
 }

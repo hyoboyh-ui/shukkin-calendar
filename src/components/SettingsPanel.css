@@ -44,7 +44,7 @@
 .settings-panel__action {
   border: none;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-warm);
   font-weight: 700;
   padding: 12px;
   border-radius: 12px;
@@ -53,8 +53,8 @@
 
 .settings-panel__action--outline {
   background: transparent;
-  border: 1.5px solid var(--accent);
-  color: var(--accent);
+  border: 1.5px solid var(--accent-text);
+  color: var(--accent-text);
 }
 
 .settings-panel__file-input {

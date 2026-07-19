@@ -49,7 +49,7 @@ const DayCardBody = ({ date }: Props) => {
   };
 
   return (
-    <div className="day-card__body">
+    <div className={`day-card__body day-card__body--${status}`}>
       <div className="day-card__header">
         <span className="day-card__date">
           {date.getFullYear()}年{date.getMonth() + 1}月{date.getDate()}日
@@ -57,11 +57,7 @@ const DayCardBody = ({ date }: Props) => {
         <span className="day-card__weekday">({weekdayJa(date)})</span>
       </div>
 
-      <button
-        type="button"
-        className={`day-card__frame day-card__frame--${status}`}
-        onClick={handleStatusTap}
-      >
+      <button type="button" className="day-card__frame" onClick={handleStatusTap}>
         {STATUS_LABEL[status]}
       </button>
 

@@ -16,7 +16,7 @@
 .total-tab__amount {
   font-size: 2.6rem;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .total-tab__tax {

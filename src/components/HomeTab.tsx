@@ -17,9 +17,14 @@ const HomeTab = () => {
   const [slide, setSlide] = useState<Slide | null>(null);
   const [moved, setMoved] = useState(false);
   const dragStartX = useRef<number | null>(null);
+  // React can batch several synchronous goDay() calls (e.g. rapid taps) before
+  // re-rendering, so the `slide` state alone isn't a reliable re-entrancy
+  // guard — a ref updates immediately and can't be seen as stale mid-batch.
+  const animatingRef = useRef(false);
 
   const goDay = (delta: number) => {
-    if (slide) return;
+    if (animatingRef.current) return;
+    animatingRef.current = true;
     setSlide({ direction: delta > 0 ? 1 : -1, fromDate: date });
     setMoved(false);
     setDate((d) => addDays(d, delta));
@@ -34,6 +39,7 @@ const HomeTab = () => {
   const handleTransitionEnd = () => {
     setSlide(null);
     setMoved(false);
+    animatingRef.current = false;
   };
 
   // transitionend can be missed (e.g. the tab was backgrounded mid-swipe),
@@ -67,10 +73,6 @@ const HomeTab = () => {
   return (
     <div className="screen home-tab">
       <div className="day-card" onPointerDown={onPointerDown} onPointerUp={onPointerUp}>
-        <button className="day-card__nav" onClick={() => goDay(-1)} aria-label="前の日">
-          ‹
-        </button>
-
         <div className="day-card__viewport">
           <div className="day-card__track" style={trackStyle} onTransitionEnd={handleTransitionEnd}>
             {slide && slide.direction > 0 && (
@@ -88,10 +90,6 @@ const HomeTab = () => {
             )}
           </div>
         </div>
-
-        <button className="day-card__nav" onClick={() => goDay(1)} aria-label="次の日">
-          ›
-        </button>
       </div>
     </div>
   );

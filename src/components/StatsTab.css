@@ -24,7 +24,7 @@
 
 .range-toggle__btn.is-active {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-warm);
 }
 
 .stats-card {

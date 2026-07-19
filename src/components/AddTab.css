@@ -16,6 +16,6 @@
 .month-total__value {
   font-size: 2.2rem;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--accent-text);
   margin-top: 2px;
 }
