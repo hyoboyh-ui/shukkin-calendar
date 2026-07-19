@@ -32,7 +32,13 @@ function App() {
           onClick={() => setSettingsOpen(true)}
           aria-label="設定"
         >
-          ⚙️
+          <span
+            className="app-header__settings-icon"
+            style={{
+              maskImage: `url(${import.meta.env.BASE_URL}nav-icons/settings.png)`,
+              WebkitMaskImage: `url(${import.meta.env.BASE_URL}nav-icons/settings.png)`,
+            }}
+          />
         </button>
       </header>
 

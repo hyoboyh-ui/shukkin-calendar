@@ -18,8 +18,23 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  font-size: 1.05rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.app-header__settings-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: var(--accent);
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
 }
 
 .app-main {
