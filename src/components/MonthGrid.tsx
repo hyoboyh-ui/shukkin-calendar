@@ -1,5 +1,5 @@
 import { addDays } from 'date-fns';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useData } from '../context/DataContext';
 import type { Bubble, DayStatus } from '../types';
 import { dateKey, periodFromKey, listDaysInPeriod, weekdayJa } from '../utils/period';
@@ -50,9 +50,22 @@ const rowSegments = (row: Date[], bubbleByKey: Map<string, Bubble>): RowSegment[
   return segments;
 };
 
+const POP_MS = 420;
+
 const MonthGrid = ({ periodKey }: Props) => {
   const { records, setStatus } = useData();
   const clickTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+  const [poppingKey, setPoppingKey] = useState<string | null>(null);
+  const popTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const triggerPop = (key: string) => {
+    // Removing then re-adding the class (even for the same cell tapped twice
+    // in a row) is what makes the CSS animation restart instead of no-op.
+    setPoppingKey(null);
+    requestAnimationFrame(() => setPoppingKey(key));
+    if (popTimer.current) clearTimeout(popTimer.current);
+    popTimer.current = setTimeout(() => setPoppingKey(null), POP_MS);
+  };
 
   const { allDays, bubbleByKey, inPeriodSet } = useMemo(() => {
     const { start, end } = periodFromKey(periodKey);
@@ -87,11 +100,13 @@ const MonthGrid = ({ periodKey }: Props) => {
       clearTimeout(existing);
       clickTimers.current.delete(key);
       setStatus(key, nextOnDoubleTap());
+      triggerPop(key);
       return;
     }
     const timer = setTimeout(() => {
       clickTimers.current.delete(key);
       setStatus(key, nextOnSingleTap(records[key]?.status));
+      triggerPop(key);
     }, DOUBLE_TAP_WINDOW);
     clickTimers.current.set(key, timer);
   };
@@ -125,7 +140,7 @@ const MonthGrid = ({ periodKey }: Props) => {
               <button
                 key={key}
                 type="button"
-                className={`cell cell--${status}`}
+                className={`cell cell--${status} ${key === poppingKey ? 'cell--pop' : ''}`}
                 style={style}
                 onClick={() => handleTap(key)}
               >

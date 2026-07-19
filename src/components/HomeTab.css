@@ -15,11 +15,9 @@
 
 .day-card__track {
   display: flex;
-  transition: transform 260ms ease;
 }
 
 .day-card__slot {
-  flex: 1 0 0%;
   min-width: 0;
   box-sizing: border-box;
 }
