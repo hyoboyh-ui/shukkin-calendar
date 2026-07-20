@@ -12,6 +12,7 @@
   --accent-text: #cc2e05;
   --on-warm: #4a2e00;
   --bubble-bg: #fdeee1;
+  --bubble-fill: #fca679;
 
   --work-bg: #fdf1d6;
   --off-bg: #fb7b0c;
@@ -41,6 +42,7 @@
     --accent-text: #fdab78;
     --on-warm: #241a0d;
     --bubble-bg: #33230f;
+    --bubble-fill: #fdbb92;
 
     --work-bg: #3a2e12;
     --off-bg: #d96a0e;
