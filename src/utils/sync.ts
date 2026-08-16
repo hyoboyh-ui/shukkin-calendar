@@ -1,7 +1,7 @@
 import type { DataStore } from '../types';
 
 // デプロイ後に、Apps Script の「ウェブアプリのURL」に置き換える。
-export const SYNC_URL = '';
+export const SYNC_URL = 'https://script.google.com/macros/s/AKfycby3lEuk4oJar_PF5-S6JqWCzoB5V5ObJQuS0rxwCblh1aZMECVVT_lj12OO6xTV0pd4cA/exec';
 
 export const isSyncConfigured = (): boolean => SYNC_URL.length > 0;
 
