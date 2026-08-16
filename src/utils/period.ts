@@ -1,6 +1,6 @@
 import { addDays, addMonths, format, isSameDay, parseISO } from 'date-fns';
 
-export const PERIOD_START_DAY = 16;
+export const PERIOD_START_DAY = 17;
 
 export const dateKey = (d: Date): string => format(d, 'yyyy-MM-dd');
 export const parseKey = (k: string): Date => parseISO(k);
