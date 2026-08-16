@@ -41,6 +41,31 @@
   color: var(--text-muted);
 }
 
+.settings-panel__sync {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface-alt);
+}
+
+.settings-panel__sync-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.settings-panel__sync-status {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.settings-panel__sync-error {
+  font-size: 0.75rem;
+  color: #d64545;
+}
+
 .settings-panel__action {
   border: none;
   background: var(--accent);
@@ -55,6 +80,10 @@
   background: transparent;
   border: 1.5px solid var(--accent-text);
   color: var(--accent-text);
+}
+
+.settings-panel__action:disabled {
+  opacity: 0.55;
 }
 
 .settings-panel__file-input {

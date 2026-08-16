@@ -1,6 +1,7 @@
 import type { DataStore } from '../types';
 
 const STORAGE_KEY = 'shukkin-calendar:data:v1';
+const PENDING_KEY = 'shukkin-calendar:pending:v1';
 
 export const loadData = (): DataStore => {
   try {
@@ -26,6 +27,20 @@ export const exportDataToFile = (data: DataStore): void => {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+};
+
+/** まだサーバーに送れていない変更のキュー（日付キー→その時点のレコード全体）。 */
+export const loadPending = (): DataStore => {
+  try {
+    const raw = localStorage.getItem(PENDING_KEY);
+    return raw ? (JSON.parse(raw) as DataStore) : {};
+  } catch {
+    return {};
+  }
+};
+
+export const savePending = (pending: DataStore): void => {
+  localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
 };
 
 export const importDataFromFile = (file: File): Promise<DataStore> =>

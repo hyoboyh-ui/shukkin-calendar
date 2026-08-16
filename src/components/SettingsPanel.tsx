@@ -7,8 +7,13 @@ interface Props {
   onClose: () => void;
 }
 
+const formatSyncedAt = (ms: number): string => {
+  const d = new Date(ms);
+  return `${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+};
+
 const SettingsPanel = ({ onClose }: Props) => {
-  const { records, replaceAll } = useData();
+  const { records, replaceAll, syncEnabled, pendingCount, syncing, lastSyncedAt, syncError, syncNow } = useData();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -35,6 +40,29 @@ const SettingsPanel = ({ onClose }: Props) => {
           <button type="button" className="settings-panel__close" onClick={onClose}>
             ✕
           </button>
+        </div>
+
+        <div className="settings-panel__sync">
+          <span className="settings-panel__sync-title">オンライン同期</span>
+          {syncEnabled ? (
+            <>
+              <span className="settings-panel__sync-status">
+                {pendingCount > 0 ? `未同期の変更: ${pendingCount}件` : 'すべて同期済み'}
+                {lastSyncedAt && ` ・ 最終同期 ${formatSyncedAt(lastSyncedAt)}`}
+              </span>
+              <button
+                type="button"
+                className="settings-panel__action settings-panel__action--outline"
+                onClick={syncNow}
+                disabled={syncing}
+              >
+                {syncing ? '同期中…' : '今すぐ同期'}
+              </button>
+              {syncError && <span className="settings-panel__sync-error">同期に失敗しました（{syncError}）</span>}
+            </>
+          ) : (
+            <span className="settings-panel__sync-status">オンライン同期は未設定です</span>
+          )}
         </div>
 
         <button type="button" className="settings-panel__action" onClick={() => exportDataToFile(records)}>
