@@ -66,6 +66,13 @@ function doGet(e) {
 // 各日付についてサーバー側のupdatedAtより新しい場合だけ書き込む。
 // 戻り値は常にシート全体のマージ後の状態（クライアントはこれで丸ごと置き換える）。
 
+// スプレッドシートは "2026-08-16" のような文字列を書き込むと自動でDate型に
+// 変換してしまうため、読み出し時は必ずこの関数でyyyy-MM-dd文字列に戻す。
+function normalizeDateKey(v) {
+  if (v instanceof Date) return Utilities.formatDate(v, 'Asia/Tokyo', 'yyyy-MM-dd');
+  return v ? String(v) : '';
+}
+
 function syncRecords(changes) {
   const ws = getSheet();
   const lastRow = ws.getLastRow();
@@ -75,7 +82,7 @@ function syncRecords(changes) {
   if (lastRow > 1) {
     values = ws.getRange(2, 1, lastRow - 1, HEADERS.length).getValues();
     values.forEach((row, i) => {
-      const date = row[0];
+      const date = normalizeDateKey(row[0]);
       if (date) rowIndexByDate[date] = i;
     });
   }
@@ -106,7 +113,7 @@ function syncRecords(changes) {
 
   const records = {};
   values.forEach((row) => {
-    const date = row[0];
+    const date = normalizeDateKey(row[0]);
     if (!date) return;
     const rec = { updatedAt: Number(row[3]) || 0 };
     if (row[1]) rec.status = row[1];
