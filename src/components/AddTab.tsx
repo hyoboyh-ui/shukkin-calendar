@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useData } from '../context/DataContext';
 import MonthGrid from './MonthGrid';
-import { listPeriodKeysAround, periodKey, periodLabel } from '../utils/period';
+import { appToday, listPeriodKeysAround, periodKey, periodLabel } from '../utils/period';
 import { periodStats } from '../utils/stats';
 import './AddTab.css';
 
@@ -11,7 +11,7 @@ const MONTHS_AFTER = 6;
 const AddTab = () => {
   const { records } = useData();
   const options = useMemo(() => listPeriodKeysAround(MONTHS_BEFORE, MONTHS_AFTER), []);
-  const [selected, setSelected] = useState(() => periodKey(new Date()));
+  const [selected, setSelected] = useState(() => periodKey(appToday()));
   const stats = useMemo(() => periodStats(selected, records), [selected, records]);
 
   return (

@@ -1,7 +1,7 @@
 import { addDays } from 'date-fns';
 import { useLayoutEffect, useRef, useState } from 'react';
 import DayCardBody from './DayCardBody';
-import { dateKey } from '../utils/period';
+import { appToday, dateKey } from '../utils/period';
 import './HomeTab.css';
 
 const SETTLE_MS = 320;
@@ -19,7 +19,7 @@ interface DragState {
 }
 
 const HomeTab = () => {
-  const [date, setDate] = useState(() => new Date());
+  const [date, setDate] = useState(() => appToday());
   const [width, setWidth] = useState(0);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);

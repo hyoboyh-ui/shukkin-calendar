@@ -1,6 +1,16 @@
 import { addDays, addMonths, format, isSameDay, parseISO } from 'date-fns';
 
-export const PERIOD_START_DAY = 17;
+export const PERIOD_START_DAY = 16;
+
+// 夜勤明けの朝に前夜分の運収を入力する運用のため、日付の切り替わりを
+// 深夜0時ではなく正午にしている（正午より前は前日のまま扱う）。
+export const BUSINESS_DAY_CUTOFF_HOUR = 12;
+
+/** 「今日」を業務日ベースで返す（正午より前は前日）。 */
+export const appToday = (now: Date = new Date()): Date => {
+  const base = now.getHours() < BUSINESS_DAY_CUTOFF_HOUR ? addDays(now, -1) : now;
+  return new Date(base.getFullYear(), base.getMonth(), base.getDate());
+};
 
 export const dateKey = (d: Date): string => format(d, 'yyyy-MM-dd');
 export const parseKey = (k: string): Date => parseISO(k);
@@ -44,10 +54,10 @@ export const listDaysInPeriod = (key: string): Date[] => {
   return days;
 };
 
-export const isToday = (d: Date): boolean => isSameDay(d, new Date());
+export const isToday = (d: Date): boolean => isSameDay(d, appToday());
 
 export const listRecentPeriodKeys = (count: number, fromKey?: string): string[] => {
-  const base = fromKey ?? periodKey(new Date());
+  const base = fromKey ?? periodKey(appToday());
   const keys: string[] = [];
   for (let i = count - 1; i >= 0; i--) {
     keys.push(shiftPeriodKey(base, -i));
@@ -56,7 +66,7 @@ export const listRecentPeriodKeys = (count: number, fromKey?: string): string[] 
 };
 
 export const listPeriodKeysAround = (before: number, after: number, fromKey?: string): string[] => {
-  const base = fromKey ?? periodKey(new Date());
+  const base = fromKey ?? periodKey(appToday());
   const keys: string[] = [];
   for (let i = -before; i <= after; i++) {
     keys.push(shiftPeriodKey(base, i));

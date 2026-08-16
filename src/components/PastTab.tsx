@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import MonthGrid from './MonthGrid';
-import { listRecentPeriodKeys, periodKey, periodLabel } from '../utils/period';
+import { appToday, listRecentPeriodKeys, periodKey, periodLabel } from '../utils/period';
 
 const PAST_RANGE = 36;
 
 const PastTab = () => {
   const options = listRecentPeriodKeys(PAST_RANGE).reverse();
-  const [selected, setSelected] = useState(() => periodKey(new Date()));
+  const [selected, setSelected] = useState(() => periodKey(appToday()));
 
   return (
     <div className="screen">

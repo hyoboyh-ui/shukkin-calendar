@@ -1,6 +1,6 @@
 import { useData } from '../context/DataContext';
 import type { DayStatus } from '../types';
-import { dateKey, weekdayJa } from '../utils/period';
+import { appToday, dateKey, weekdayJa } from '../utils/period';
 import { effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
 import { useRef } from 'react';
 
@@ -24,7 +24,7 @@ const DayCardBody = ({ date }: Props) => {
 
   const key = dateKey(date);
   const status = effectiveStatus(records[key]?.status);
-  const isFuture = startOfDay(date) > startOfDay(new Date());
+  const isFuture = startOfDay(date) > appToday();
 
   const handleStatusTap = () => {
     if (clickTimer.current) {

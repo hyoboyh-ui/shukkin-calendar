@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 import { useData } from '../context/DataContext';
 import { formatYen } from '../utils/format';
 import { afterTax, messageForTotal } from '../utils/message';
-import { periodKey, periodLabel } from '../utils/period';
+import { appToday, periodKey, periodLabel } from '../utils/period';
 import { periodStats } from '../utils/stats';
 import './TotalTab.css';
 
 const TotalTab = () => {
   const { records } = useData();
-  const key = periodKey(new Date());
+  const key = periodKey(appToday());
   const stats = useMemo(() => periodStats(key, records), [key, records]);
   const tier = messageForTotal(stats.total);
 
