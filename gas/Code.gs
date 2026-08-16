@@ -68,8 +68,12 @@ function doGet(e) {
 
 // スプレッドシートは "2026-08-16" のような文字列を書き込むと自動でDate型に
 // 変換してしまうため、読み出し時は必ずこの関数でyyyy-MM-dd文字列に戻す。
+// doPost実行コンテキストでは `instanceof Date` が実レルムの違いで効かないことが
+// あるため、内部の[[Class]]を見るObject.prototype.toString判定を使う。
 function normalizeDateKey(v) {
-  if (v instanceof Date) return Utilities.formatDate(v, 'Asia/Tokyo', 'yyyy-MM-dd');
+  if (Object.prototype.toString.call(v) === '[object Date]') {
+    return Utilities.formatDate(v, 'Asia/Tokyo', 'yyyy-MM-dd');
+  }
   return v ? String(v) : '';
 }
 
