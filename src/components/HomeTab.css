@@ -105,7 +105,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: #ffffff;
+  background: var(--surface);
   border-radius: 12px;
   padding: 8px 14px;
   width: 100%;
