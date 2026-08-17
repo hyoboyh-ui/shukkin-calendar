@@ -1,0 +1,88 @@
+.month-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 8px 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.list-row__date {
+  width: 44px;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+.list-row__weekday {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.list-row__status {
+  width: 56px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 9px;
+  padding: 7px 0;
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  background: var(--work-bg);
+  color: var(--text);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.list-row--off .list-row__status {
+  background: var(--off-bg);
+  color: var(--off-text);
+}
+
+.list-row--paid .list-row__status {
+  background: var(--paid-bg);
+  color: var(--paid-text);
+}
+
+.list-row__revenue {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--surface-alt);
+  border-radius: 9px;
+  padding: 6px 10px;
+}
+
+.list-row__revenue span {
+  font-weight: 700;
+  color: var(--accent-text);
+  font-size: 0.9rem;
+}
+
+.list-row__revenue input {
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 700;
+  width: 100%;
+  min-width: 0;
+  outline: none;
+  color: var(--text);
+}
+
+.list-row__revenue input:disabled {
+  color: var(--text-faint);
+}
