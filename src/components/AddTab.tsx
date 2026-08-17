@@ -5,7 +5,7 @@ import { appToday, listPeriodKeysAround, periodKey, periodLabel } from '../utils
 import { periodStats } from '../utils/stats';
 import './AddTab.css';
 
-const MONTHS_BEFORE = 6;
+const MONTHS_BEFORE = 36;
 const MONTHS_AFTER = 6;
 
 const AddTab = () => {

@@ -1,12 +1,12 @@
 import './BottomNav.css';
 
-export type TabKey = 'add' | 'past' | 'home' | 'total' | 'stats';
+export type TabKey = 'calendar' | 'weekday' | 'home' | 'total' | 'stats';
 
 const ICON_BASE = `${import.meta.env.BASE_URL}nav-icons/`;
 
 const TABS: { key: TabKey; label: string; icon: string }[] = [
-  { key: 'add', label: '追加', icon: `${ICON_BASE}add.png` },
-  { key: 'past', label: '過去月', icon: `${ICON_BASE}past.png` },
+  { key: 'calendar', label: '出勤表', icon: `${ICON_BASE}calendar.png` },
+  { key: 'weekday', label: '曜日別', icon: `${ICON_BASE}weekday.png` },
   { key: 'home', label: 'ホーム', icon: `${ICON_BASE}home.png` },
   { key: 'total', label: '合計', icon: `${ICON_BASE}total.png` },
   { key: 'stats', label: '集計', icon: `${ICON_BASE}stats.png` },

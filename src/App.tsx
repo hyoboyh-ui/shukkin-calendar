@@ -3,15 +3,15 @@ import './App.css';
 import AddTab from './components/AddTab';
 import BottomNav, { type TabKey } from './components/BottomNav';
 import HomeTab from './components/HomeTab';
-import PastTab from './components/PastTab';
 import SettingsPanel from './components/SettingsPanel';
 import StatsTab from './components/StatsTab';
 import TotalTab from './components/TotalTab';
+import WeekdayTab from './components/WeekdayTab';
 import { DataProvider } from './context/DataContext';
 
 const TAB_COMPONENTS: Record<TabKey, () => ReactElement> = {
-  add: AddTab,
-  past: PastTab,
+  calendar: AddTab,
+  weekday: WeekdayTab,
   home: HomeTab,
   total: TotalTab,
   stats: StatsTab,

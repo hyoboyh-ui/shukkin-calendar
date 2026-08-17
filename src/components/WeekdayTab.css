@@ -1,0 +1,97 @@
+.weekday-tab__empty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 40px;
+}
+
+.weekday-tab__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.weekday-card {
+  background: var(--surface-alt);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.weekday-card__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.weekday-card__label {
+  width: 24px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text);
+  flex-shrink: 0;
+}
+
+.weekday-card__bar-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 6px;
+  background: var(--border);
+  overflow: hidden;
+  display: block;
+}
+
+.weekday-card__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent-soft);
+  border-radius: 6px;
+}
+
+.weekday-card__amounts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.weekday-card__average {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.weekday-card__count {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.weekday-card--best {
+  background: var(--accent);
+}
+
+.weekday-card--best .weekday-card__label,
+.weekday-card--best .weekday-card__average {
+  color: var(--on-warm);
+}
+
+.weekday-card--best .weekday-card__count {
+  color: var(--on-warm);
+  opacity: 0.8;
+}
+
+.weekday-card--best .weekday-card__bar-track {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.weekday-card--best .weekday-card__bar-fill {
+  background: var(--on-warm);
+}
+
+.weekday-card__message {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--on-warm);
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
