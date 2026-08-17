@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react';
 import { useData } from '../context/DataContext';
 import type { DayStatus } from '../types';
 import { appToday, dateKey, listDaysInPeriod, weekdayJa } from '../utils/period';
-import { effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
+import { DOUBLE_TAP_WINDOW_MS, effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
 import './MonthList.css';
 
 const STATUS_LABEL: Record<DayStatus, string> = {
@@ -10,8 +10,6 @@ const STATUS_LABEL: Record<DayStatus, string> = {
   off: '休日',
   paid: '有給',
 };
-
-const DOUBLE_TAP_WINDOW = 280;
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -37,7 +35,7 @@ const MonthList = ({ periodKey }: Props) => {
     const timer = setTimeout(() => {
       clickTimers.current.delete(key);
       setStatus(key, nextOnSingleTap(records[key]?.status));
-    }, DOUBLE_TAP_WINDOW);
+    }, DOUBLE_TAP_WINDOW_MS);
     clickTimers.current.set(key, timer);
   };
 

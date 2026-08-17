@@ -1,7 +1,7 @@
 import { useData } from '../context/DataContext';
 import type { DayStatus } from '../types';
 import { appToday, dateKey, weekdayJa } from '../utils/period';
-import { effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
+import { DOUBLE_TAP_WINDOW_MS, effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
 import { useRef } from 'react';
 
 const STATUS_LABEL: Record<DayStatus, string> = {
@@ -9,8 +9,6 @@ const STATUS_LABEL: Record<DayStatus, string> = {
   off: '休日',
   paid: '有給休暇',
 };
-
-const DOUBLE_TAP_WINDOW = 280;
 
 const startOfDay = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate());
 
@@ -36,7 +34,7 @@ const DayCardBody = ({ date }: Props) => {
     clickTimer.current = setTimeout(() => {
       clickTimer.current = null;
       setStatus(key, nextOnSingleTap(records[key]?.status));
-    }, DOUBLE_TAP_WINDOW);
+    }, DOUBLE_TAP_WINDOW_MS);
   };
 
   const handleRevenueChange = (value: string) => {

@@ -4,17 +4,16 @@ import { useData } from '../context/DataContext';
 import type { Bubble, DayStatus } from '../types';
 import { dateKey, periodFromKey, listDaysInPeriod, weekdayJa } from '../utils/period';
 import { computeBubbles } from '../utils/streaks';
-import { effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
+import { DOUBLE_TAP_WINDOW_MS, effectiveStatus, nextOnDoubleTap, nextOnSingleTap } from '../utils/tap';
 import './MonthGrid.css';
 
 const STATUS_LABEL: Record<DayStatus, string> = {
   work: '出勤',
   off: '休日',
-  paid: '有給休暇',
+  paid: '有給',
 };
 
 const WEEKDAYS = ['日', '月', '火', '水', '木', '金', '土'];
-const DOUBLE_TAP_WINDOW = 280;
 
 interface Props {
   periodKey: string;
@@ -107,7 +106,7 @@ const MonthGrid = ({ periodKey }: Props) => {
       clickTimers.current.delete(key);
       setStatus(key, nextOnSingleTap(records[key]?.status));
       triggerPop(key);
-    }, DOUBLE_TAP_WINDOW);
+    }, DOUBLE_TAP_WINDOW_MS);
     clickTimers.current.set(key, timer);
   };
 
