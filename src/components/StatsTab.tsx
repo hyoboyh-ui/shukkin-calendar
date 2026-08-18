@@ -45,15 +45,6 @@ const StatsTab = () => {
     ],
   };
 
-  const breakdownData = {
-    labels,
-    datasets: [
-      { label: '出勤', data: stats.map((s) => s.work), backgroundColor: '#FCC79E', stack: 'a' },
-      { label: '休日', data: stats.map((s) => s.off), backgroundColor: '#FB7B0C', stack: 'a' },
-      { label: '有給', data: stats.map((s) => s.paid), backgroundColor: '#FBA70E', stack: 'a' },
-    ],
-  };
-
   return (
     <div className="screen stats-tab">
       <div className="screen__row">
@@ -88,15 +79,25 @@ const StatsTab = () => {
       </div>
 
       <div className="stats-card">
-        <p className="stats-card__title">出勤・休日・有給の内訳</p>
-        <Bar
-          data={breakdownData}
-          options={{
-            responsive: true,
-            plugins: { legend: { position: 'bottom' } },
-            scales: { x: { stacked: true }, y: { stacked: true } },
-          }}
-        />
+        <p className="stats-card__title">月別の運収</p>
+        <div className="stats-list">
+          {stats.map((s, i) => {
+            const diff = i > 0 ? s.total - stats[i - 1].total : null;
+            return (
+              <div key={s.key} className="stats-list__row">
+                <span className="stats-list__label">{labels[i]}</span>
+                <span className="stats-list__right">
+                  {diff !== null && (
+                    <span className={`stats-list__diff ${diff >= 0 ? 'stats-list__diff--up' : 'stats-list__diff--down'}`}>
+                      <span className="stats-list__diff-arrow">{diff >= 0 ? '▲' : '▼'}</span> {formatYen(Math.abs(diff))}
+                    </span>
+                  )}
+                  <span className="stats-list__amount">{formatYen(s.total)}</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
