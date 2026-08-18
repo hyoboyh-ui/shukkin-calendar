@@ -22,6 +22,8 @@
   flex: 1;
   overflow-y: auto;
   padding-top: 18px;
+  padding-right: 8px;
+  margin-right: -8px;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 100%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 18px, #000 100%);
 }

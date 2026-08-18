@@ -62,6 +62,7 @@ body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 button {
