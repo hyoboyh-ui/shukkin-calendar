@@ -22,4 +22,4 @@ export const messageForTotal = (total: number): MessageTier => {
   return tier;
 };
 
-export const afterTax = (amount: number): number => Math.round(amount * (1 - TAX_RATE));
+export const afterTax = (amount: number): number => Math.round(amount / (1 + TAX_RATE));
