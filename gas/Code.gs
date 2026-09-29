@@ -31,30 +31,145 @@ function getSheet() {
 }
 
 // ============================================================
+// 認証
+// ============================================================
+//
+// アプリのコードは公開されているので、秘密はアプリ側に一切置かない。
+// 鍵は本人が覚えるパスワードだけで、スクリプトプロパティにはそのハッシュだけを保存する。
+// ログインに成功した端末にはトークンを発行し、以降の同期はトークンで認証する。
+//
+// 初回設定・パスワード変更の手順:
+//   1. プロジェクトの設定 → スクリプト プロパティに SETUP_PASSWORD = 新しいパスワード を追加
+//   2. エディタで setupPassword を実行（SETUP_PASSWORD は実行後に自動で消える）
+//   ※ 実行すると全端末がログアウトされる
+
+const PWD_ITERATIONS = 2000;
+const MAX_TOKENS = 10;
+const MAX_FAILED_LOGINS = 5;
+const LOGIN_LOCK_MS = 15 * 60 * 1000;
+
+const PROP_SALT = 'PWD_SALT';
+const PROP_HASH = 'PWD_HASH';
+const PROP_TOKENS = 'TOKENS';
+const PROP_FAILS = 'LOGIN_FAILS';
+const PROP_LOCKED_UNTIL = 'LOGIN_LOCKED_UNTIL';
+const PROP_SETUP = 'SETUP_PASSWORD';
+
+function toHex(bytes) {
+  return bytes.map((b) => ('0' + (b & 0xff).toString(16)).slice(-2)).join('');
+}
+
+function sha256Hex(text) {
+  return toHex(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, text, Utilities.Charset.UTF_8));
+}
+
+function hashPassword(password, salt) {
+  let h = salt + ':' + password;
+  for (let i = 0; i < PWD_ITERATIONS; i++) h = sha256Hex(salt + h);
+  return h;
+}
+
+function setupPassword() {
+  const props = PropertiesService.getScriptProperties();
+  const password = props.getProperty(PROP_SETUP);
+  if (!password) {
+    throw new Error('スクリプト プロパティに SETUP_PASSWORD を追加してから実行してください。');
+  }
+  const salt = Utilities.getUuid();
+  props.setProperties({
+    [PROP_SALT]: salt,
+    [PROP_HASH]: hashPassword(password, salt),
+    [PROP_TOKENS]: '[]',
+    [PROP_FAILS]: '0',
+    [PROP_LOCKED_UNTIL]: '0',
+  });
+  props.deleteProperty(PROP_SETUP);
+  Logger.log('パスワードを設定しました。全端末がログアウトされています。');
+}
+
+/** 締め出されたときにエディタから実行して、ログイン失敗の回数をリセットする。 */
+function resetLoginLock() {
+  PropertiesService.getScriptProperties().setProperties({ [PROP_FAILS]: '0', [PROP_LOCKED_UNTIL]: '0' });
+  Logger.log('ログインのロックを解除しました。');
+}
+
+function readTokens(props) {
+  try {
+    return JSON.parse(props.getProperty(PROP_TOKENS) || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function login(password) {
+  const props = PropertiesService.getScriptProperties();
+  const salt = props.getProperty(PROP_SALT);
+  const hash = props.getProperty(PROP_HASH);
+  if (!salt || !hash) return { error: 'not_configured' };
+
+  const lockedUntil = Number(props.getProperty(PROP_LOCKED_UNTIL)) || 0;
+  if (Date.now() < lockedUntil) return { error: 'locked' };
+
+  if (typeof password !== 'string' || hashPassword(password, salt) !== hash) {
+    const fails = (Number(props.getProperty(PROP_FAILS)) || 0) + 1;
+    if (fails >= MAX_FAILED_LOGINS) {
+      props.setProperties({ [PROP_FAILS]: '0', [PROP_LOCKED_UNTIL]: String(Date.now() + LOGIN_LOCK_MS) });
+      return { error: 'locked' };
+    }
+    props.setProperty(PROP_FAILS, String(fails));
+    return { error: 'wrong_password' };
+  }
+
+  const token = Utilities.getUuid() + Utilities.getUuid();
+  const tokens = readTokens(props);
+  tokens.push(sha256Hex(token));
+  props.setProperties({
+    [PROP_TOKENS]: JSON.stringify(tokens.slice(-MAX_TOKENS)),
+    [PROP_FAILS]: '0',
+  });
+  return { token };
+}
+
+function isValidToken(token) {
+  if (typeof token !== 'string' || !token) return false;
+  const tokens = readTokens(PropertiesService.getScriptProperties());
+  return tokens.indexOf(sha256Hex(token)) !== -1;
+}
+
+// ============================================================
 // エントリポイント
 // ============================================================
+//
+// doGet は置かない（URLをブラウザで開いただけでデータが読めてしまうため）。
 
 function doPost(e) {
+  const lock = LockService.getScriptLock();
   try {
+    // 同時に来た同期が互いの書き込みを上書きしないよう、1件ずつ順番に処理する。
+    lock.waitLock(20000);
     const data = JSON.parse(e.postData.contents);
     let result;
 
     switch (data.action) {
-      case 'sync': result = syncRecords(data.changes || {}); break;
-      default: result = { error: 'Unknown action' };
+      case 'login':
+        result = login(data.password);
+        break;
+      case 'sync':
+        result = isValidToken(data.token) ? syncRecords(data.changes || {}) : { error: 'unauthorized' };
+        break;
+      default:
+        result = { error: 'Unknown action' };
     }
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MimeType.JSON);
+    return json(result);
   } catch (err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ error: err.message }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return json({ error: err.message });
+  } finally {
+    lock.releaseLock();
   }
 }
 
-function doGet(e) {
-  return doPost({ postData: { contents: JSON.stringify(e.parameter) } });
+function json(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
 // ============================================================
@@ -113,6 +228,7 @@ function syncRecords(changes) {
 
   if (changed) {
     ws.getRange(2, 1, values.length, HEADERS.length).setValues(values);
+    SpreadsheetApp.flush();
   }
 
   const records = {};

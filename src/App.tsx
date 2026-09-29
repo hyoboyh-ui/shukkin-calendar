@@ -7,7 +7,7 @@ import SettingsPanel from './components/SettingsPanel';
 import StatsTab from './components/StatsTab';
 import TotalTab from './components/TotalTab';
 import WeekdayTab from './components/WeekdayTab';
-import { DataProvider } from './context/DataContext';
+import { DataProvider, useData } from './context/DataContext';
 
 const TAB_COMPONENTS: Record<TabKey, () => ReactElement> = {
   calendar: AddTab,
@@ -15,6 +15,16 @@ const TAB_COMPONENTS: Record<TabKey, () => ReactElement> = {
   home: HomeTab,
   total: TotalTab,
   stats: StatsTab,
+};
+
+const LoginNotice = ({ onOpen }: { onOpen: () => void }) => {
+  const { syncEnabled, loggedIn } = useData();
+  if (!syncEnabled || loggedIn) return null;
+  return (
+    <button type="button" className="login-notice" onClick={onOpen}>
+      同期が止まっています。タップしてログイン
+    </button>
+  );
 };
 
 function App() {
@@ -41,6 +51,8 @@ function App() {
           />
         </button>
       </header>
+
+      <LoginNotice onOpen={() => setSettingsOpen(true)} />
 
       <main className="app-main">
         <ActiveTab />

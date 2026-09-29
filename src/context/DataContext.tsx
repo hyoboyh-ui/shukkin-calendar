@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { DataStore, DayStatus } from '../types';
-import { loadData, loadPending, saveData, savePending } from '../utils/storage';
-import { gasSync, isSyncConfigured } from '../utils/sync';
+import { loadData, loadPending, loadToken, saveData, savePending, saveToken } from '../utils/storage';
+import { AuthError, gasLogin, gasSync, isSyncConfigured } from '../utils/sync';
 
 const SYNC_DEBOUNCE_MS = 1500;
 
@@ -9,8 +9,10 @@ interface DataContextValue {
   records: DataStore;
   setStatus: (key: string, status: DayStatus | undefined) => void;
   setRevenue: (key: string, revenue: number | undefined) => void;
-  replaceAll: (data: DataStore) => void;
+  restoreBackup: (data: DataStore) => void;
   syncEnabled: boolean;
+  loggedIn: boolean;
+  login: (password: string) => Promise<void>;
   pendingCount: number;
   syncing: boolean;
   lastSyncedAt: number | null;
@@ -23,12 +25,14 @@ const DataContext = createContext<DataContextValue | null>(null);
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [records, setRecords] = useState<DataStore>(() => loadData());
   const [pending, setPending] = useState<DataStore>(() => loadPending());
+  const [token, setToken] = useState<string | null>(() => loadToken());
   const [syncing, setSyncing] = useState(false);
   const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
   const [syncError, setSyncError] = useState<string | null>(null);
 
   const recordsRef = useRef(records);
   const pendingRef = useRef(pending);
+  const tokenRef = useRef(token);
   const syncingRef = useRef(syncing);
   const debounceTimer = useRef<number | undefined>(undefined);
 
@@ -43,19 +47,26 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   }, [pending]);
 
   useEffect(() => {
+    saveToken(token);
+    tokenRef.current = token;
+  }, [token]);
+
+  useEffect(() => {
     syncingRef.current = syncing;
   }, [syncing]);
 
   const syncNow = useCallback(() => {
-    if (!isSyncConfigured() || syncingRef.current) return;
+    const currentToken = tokenRef.current;
+    if (!isSyncConfigured() || !currentToken || syncingRef.current) return;
     const snapshot = pendingRef.current;
 
+    syncingRef.current = true;
     setSyncing(true);
-    gasSync(snapshot)
-      .then((res) => {
+    gasSync(snapshot, currentToken)
+      .then((serverRecords) => {
         setRecords((prev) => {
           const next = { ...prev };
-          Object.entries(res.records).forEach(([date, serverRec]) => {
+          Object.entries(serverRecords).forEach(([date, serverRec]) => {
             const localUpdatedAt = next[date]?.updatedAt ?? 0;
             const serverUpdatedAt = serverRec.updatedAt ?? 0;
             if (serverUpdatedAt >= localUpdatedAt) next[date] = serverRec;
@@ -73,12 +84,30 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
         setSyncError(null);
       })
       .catch((err: Error) => {
+        // ログイン切れのときはトークンを捨てる。未同期の変更はキューに残るので、
+        // ログインし直せばそのまま送られる。
+        if (err instanceof AuthError) {
+          tokenRef.current = null;
+          setToken(null);
+        }
         setSyncError(err.message);
       })
       .finally(() => {
+        syncingRef.current = false;
         setSyncing(false);
       });
   }, []);
+
+  const login = useCallback(
+    async (password: string) => {
+      const newToken = await gasLogin(password);
+      tokenRef.current = newToken;
+      setToken(newToken);
+      setSyncError(null);
+      syncNow();
+    },
+    [syncNow],
+  );
 
   // 起動時に一度、他端末の変更を取り込む
   useEffect(() => {
@@ -109,20 +138,37 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     setPending((prev) => ({ ...prev, [key]: merged }));
   }, []);
 
+  // バックアップの中身を「いま入力した」ことにして全日分を送信キューに入れる。
+  // こうしないと次の同期でスプレッドシート側の古いデータに上書きされて戻ってしまう。
+  // バックアップに無い日は空の記録として送り、スプレッドシート側からも消す。
+  const restoreBackup = useCallback((data: DataStore) => {
+    const updatedAt = Date.now();
+    const keys = new Set([...Object.keys(recordsRef.current), ...Object.keys(data)]);
+    const stamped: DataStore = {};
+    keys.forEach((key) => {
+      const { status, revenue } = data[key] ?? {};
+      stamped[key] = { status, revenue, updatedAt };
+    });
+    setRecords(stamped);
+    setPending((prev) => ({ ...prev, ...stamped }));
+  }, []);
+
   const value = useMemo<DataContextValue>(
     () => ({
       records,
       setStatus: (key, status) => stampAndQueue(key, { status }),
       setRevenue: (key, revenue) => stampAndQueue(key, { revenue }),
-      replaceAll: (data) => setRecords(data),
+      restoreBackup,
       syncEnabled: isSyncConfigured(),
+      loggedIn: token !== null,
+      login,
       pendingCount: Object.keys(pending).length,
       syncing,
       lastSyncedAt,
       syncError,
       syncNow,
     }),
-    [records, pending, syncing, lastSyncedAt, syncError, syncNow, stampAndQueue],
+    [records, pending, token, syncing, lastSyncedAt, syncError, syncNow, stampAndQueue, restoreBackup, login],
   );
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
